@@ -1,0 +1,24 @@
+{
+  "name": "xiaoyuzhou-transcript-downloader",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "description": "Download Xiaoyuzhou podcast episode lists and transcript JSON files with opencli.",
+  "bin": {
+    "xiaoyuzhou-transcripts": "./xiaoyuzhou-podcast-transcripts.mjs"
+  },
+  "scripts": {
+    "check": "node --check xiaoyuzhou-podcast-transcripts.mjs",
+    "help": "node xiaoyuzhou-podcast-transcripts.mjs --help"
+  },
+  "keywords": [
+    "xiaoyuzhou",
+    "podcast",
+    "transcript",
+    "opencli"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  }
+}
