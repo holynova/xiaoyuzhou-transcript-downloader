@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { execFile, spawn } from 'node:child_process';
+import { randomUUID } from 'node:crypto';
 import {
   existsSync,
   mkdirSync,
@@ -14,7 +15,6 @@ import { stdin as input, stdout as output } from 'node:process';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const DEFAULT_DEVICE_ID = 'your-device-id';
 const DEFAULT_USER_AGENT = 'Xiaoyuzhou/2.98.0 (build:2908; iOS 26.2.1)';
 const AUTH_FILE = path.join(os.homedir(), '.opencli', 'xiaoyuzhou.json');
 
@@ -190,7 +190,7 @@ function parseCredentialsFromText(text) {
   return {
     access_token: extractToken(text, 'x-jike-access-token'),
     refresh_token: extractToken(text, 'x-jike-refresh-token'),
-    device_id: extractToken(text, 'x-jike-device-id') || DEFAULT_DEVICE_ID,
+    device_id: extractToken(text, 'x-jike-device-id') || randomUUID().toUpperCase(),
     device_properties: extractToken(text, 'x-jike-device-properties'),
   };
 }
@@ -349,7 +349,7 @@ function loadCredentials() {
   return {
     access_token: String(credentials.access_token || '').trim(),
     refresh_token: String(credentials.refresh_token || '').trim(),
-    device_id: String(credentials.device_id || credentials.deviceId || DEFAULT_DEVICE_ID).trim() || DEFAULT_DEVICE_ID,
+    device_id: String(credentials.device_id || credentials.deviceId || randomUUID().toUpperCase()).trim(),
     device_properties: String(credentials.device_properties || credentials.deviceProperties || ''),
   };
 }
