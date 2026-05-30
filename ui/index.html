@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>小宇宙 Transcript 下载器</title>
+    <meta
+      name="description"
+      content="为 xiaoyuzhou-transcript-downloader 设计的本地 UI 原型。"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar" aria-label="主导航">
+        <a class="brand" href="#run">
+          <span class="brand-mark" aria-hidden="true">小</span>
+          <span>
+            <strong>Transcript Downloader</strong>
+            <small>小宇宙批量转录下载</small>
+          </span>
+        </a>
+        <nav class="nav-links" aria-label="页面导航">
+          <a href="#run">运行</a>
+          <a href="#checks">检查</a>
+          <a href="#output">输出</a>
+        </nav>
+      </header>
+
+      <main>
+        <section class="hero" id="run">
+          <div class="hero-copy">
+            <p class="eyebrow">本地 CLI 的可视化工作台</p>
+            <h1>下载播客全集转录</h1>
+            <p class="hero-text">
+              输入名称、URL 或 ID，配置下载策略，生成可复制命令并预览输出结构。
+            </p>
+            <div class="hero-actions">
+              <a class="button primary" href="#config">配置任务</a>
+              <a class="button secondary" href="#command">查看命令</a>
+            </div>
+          </div>
+
+          <aside class="run-panel" aria-label="任务概览">
+            <div class="panel-head">
+              <span>任务状态</span>
+              <strong id="task-mode">清单 + transcript</strong>
+            </div>
+            <div class="progress-rail" aria-hidden="true">
+              <span style="--w: 32%"></span>
+              <span style="--w: 58%"></span>
+              <span style="--w: 76%"></span>
+            </div>
+            <dl class="quick-stats">
+              <div>
+                <dt>默认间隔</dt>
+                <dd id="delay-readout">8-22s</dd>
+              </div>
+              <div>
+                <dt>重试</dt>
+                <dd id="retry-readout">2 次</dd>
+              </div>
+              <div>
+                <dt>范围</dt>
+                <dd id="range-readout">全部</dd>
+              </div>
+            </dl>
+          </aside>
+        </section>
+
+        <section class="workspace" aria-label="下载器界面">
+          <form class="config-card" id="config">
+            <div class="section-heading">
+              <p class="eyebrow">运行配置</p>
+              <h2>把 CLI 参数变成一次可控任务</h2>
+            </div>
+
+            <label class="field">
+              <span>播客名称、主页 URL 或 24 位 ID</span>
+              <input
+                id="podcast"
+                name="podcast"
+                value="半拿铁"
+                autocomplete="off"
+              />
+              <small>支持中文名称搜索，也支持直接粘贴小宇宙播客主页。</small>
+            </label>
+
+            <div class="toggle-row">
+              <label class="switch-field">
+                <input id="download" type="checkbox" checked />
+                <span></span>
+                下载 transcript JSON
+              </label>
+              <label class="switch-field">
+                <input id="yes" type="checkbox" checked />
+                <span></span>
+                非交互确认
+              </label>
+            </div>
+
+            <div class="field-grid">
+              <label class="field">
+                <span>输出目录</span>
+                <input id="output-dir" value="./xiaoyuzhou-output" />
+              </label>
+              <label class="field">
+                <span>重试次数</span>
+                <input id="retries" type="number" min="0" max="9" value="2" />
+              </label>
+              <label class="field">
+                <span>最小间隔 ms</span>
+                <input id="min-delay" type="number" min="0" step="1000" value="8000" />
+              </label>
+              <label class="field">
+                <span>最大间隔 ms</span>
+                <input id="max-delay" type="number" min="0" step="1000" value="22000" />
+              </label>
+              <label class="field">
+                <span>起始序号</span>
+                <input id="start" type="number" min="0" value="0" />
+              </label>
+              <label class="field">
+                <span>下载数量</span>
+                <input id="limit" type="number" min="0" value="0" />
+                <small>0 表示下载全部节目。</small>
+              </label>
+            </div>
+          </form>
+
+          <div class="side-stack">
+            <section class="check-card" id="checks" aria-label="环境检查">
+              <div class="section-heading compact">
+                <p class="eyebrow">执行前检查</p>
+                <h2>先确认依赖和凭证</h2>
+              </div>
+              <ol class="check-list">
+                <li>
+                  <span class="check-index">1</span>
+                  <div>
+                    <strong>Node.js 18+</strong>
+                    <small>脚本使用 ESM、fetch 和 AbortSignal。</small>
+                  </div>
+                </li>
+                <li>
+                  <span class="check-index">2</span>
+                  <div>
+                    <strong>opencli 可用</strong>
+                    <small>需要 `opencli doctor` 和 `opencli xiaoyuzhou`。</small>
+                  </div>
+                </li>
+                <li>
+                  <span class="check-index">3</span>
+                  <div>
+                    <strong>小宇宙 auth</strong>
+                    <small>读取或生成 `~/.opencli/xiaoyuzhou.json`。</small>
+                  </div>
+                </li>
+              </ol>
+            </section>
+
+            <section class="command-card" id="command" aria-label="生成命令">
+              <div class="section-heading compact">
+                <p class="eyebrow">生成命令</p>
+                <h2>复制后在终端运行</h2>
+              </div>
+              <pre><code id="command-output"></code></pre>
+              <button class="button primary full" id="copy-command" type="button">
+                复制命令
+              </button>
+              <p class="copy-feedback" id="copy-feedback" role="status"></p>
+            </section>
+          </div>
+        </section>
+
+        <section class="output-section" id="output">
+          <div class="section-heading">
+            <p class="eyebrow">输出预览</p>
+            <h2>每个播客都有独立目录和断点状态</h2>
+          </div>
+          <div class="output-grid">
+            <div class="tree-card" aria-label="输出目录结构">
+              <pre><code>xiaoyuzhou-output/
+  播客标题-podcast-id/
+    podcast.json
+    episodes.json
+    run-state.json
+    failed.json
+    transcripts/
+      episode-id/
+        transcript.json</code></pre>
+            </div>
+            <div class="notes-card">
+              <h3>界面设计要点</h3>
+              <ul>
+                <li>播客输入支持名称、URL 和 ID，贴合脚本入口。</li>
+                <li>延迟、重试、起点和数量集中配置，降低误跑成本。</li>
+                <li>命令实时生成，当前原型不接管真实下载进程。</li>
+                <li>输出树强调 `run-state.json` 和 `failed.json`，方便续跑与排错。</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

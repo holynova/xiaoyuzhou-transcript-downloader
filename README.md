@@ -78,6 +78,16 @@ chmod +x xiaoyuzhou-podcast-transcripts.mjs
 node xiaoyuzhou-podcast-transcripts.mjs
 ```
 
+## UI prototype
+
+仓库内包含一个本地静态 UI 原型，可用于配置参数、生成命令并预览输出结构：
+
+```bash
+open ui/index.html
+```
+
+这个界面目前不会直接执行下载任务，只负责把脚本能力组织成可视化工作流。
+
 用播客名称搜索并下载：
 
 ```bash
