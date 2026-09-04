@@ -1,5 +1,7 @@
 # Xiaoyuzhou Transcript Downloader
 
+静态 UI 在线地址：[xiaoyuzhou-transcript-downloader.xiaosang.cc](https://xiaoyuzhou-transcript-downloader.xiaosang.cc/)。下载脚本与认证仍需在本地运行。
+
 一个基于 `opencli` 的小宇宙播客节目清单与 transcript 批量下载脚本。
 
 它可以：
